@@ -6,6 +6,7 @@ import { version } from "../package.json";
 import { connectDb } from "./db";
 import { errorHandler } from "./middleware/error-handler";
 import { authRoute } from "./routes/auth";
+import { categoryRoute } from "./routes/category";
 
 console.log(process.env.NODE_ENV);
 // App
@@ -37,6 +38,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // route are here
 app.use("/api/auth", authRoute);
+app.use("/api/categories", categoryRoute);
 
 // api route
 app.get("/api", (req: Request, res: Response, next: NextFunction) => {
