@@ -1,5 +1,12 @@
 import express from "express";
-import { create, deleted, getAll, update } from "../controllers/post";
+import {
+    create,
+    deleted,
+    getAll,
+    update,
+    likePost,
+    dislikePost,
+} from "../controllers/post";
 import { Uploader } from "../utils/multer";
 import { requestValidator } from "../middleware/request-validator";
 import { check } from "express-validator";
@@ -30,5 +37,8 @@ route.put(
 );
 
 route.delete("/:postId", auth, deleted);
+
+route.put("/:postId/like", auth, likePost);
+route.put("/:postId/dislike", auth, dislikePost);
 
 export { route as postRouter };

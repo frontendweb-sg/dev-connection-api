@@ -51,7 +51,7 @@ const schema = new Schema(
         likes: [
             {
                 user: { type: Schema.Types.ObjectId, ref: USER_TABLE_NAME },
-                active: { type: Boolean, default: false },
+                like: { type: Boolean, default: false },
             },
         ],
         comments: [
