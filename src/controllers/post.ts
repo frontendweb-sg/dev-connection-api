@@ -144,19 +144,25 @@ const likePost = async (req: Request, res: Response, next: NextFunction) => {
             throw new NotFoundError("Post not found!");
         }
 
-        const likes = post.likes as ILike[];
-        const item = likes.find((like: ILike) => like.user === userId);
+        const likes = post.likes?.filter(
+            (like: ILike) => like.user.toString() === userId
+        ) as ILike[];
 
-        if (item && !item.like) {
-            post.likes = likes.map((like: ILike) =>
-                like.user === userId ? { ...like, like: true } : like
+        if (likes.length > 0) {
+            const item = likes.find(
+                (like: ILike) => like.user.toString() === userId
             );
-        } else {
-            post?.likes?.unshift({
-                user: userId,
-                like: true,
-            });
-        }
+
+            if (item?.like) {
+                throw new BadRequestError("You have already like this post!");
+            } else {
+                post.likes = post?.likes?.map((like: ILike) =>
+                    like.user.toString() === userId
+                        ? { ...like, like: true }
+                        : like
+                );
+            }
+        } else post?.likes?.unshift({ user: userId, like: true });
 
         await post.save();
         return res.status(200).send(post);
@@ -182,21 +188,24 @@ const dislikePost = async (req: Request, res: Response, next: NextFunction) => {
         }
 
         const likes = post.likes?.filter(
-            (like: ILike) => like.user === userId
+            (like: ILike) => like.user.toString() === userId
         ) as ILike[];
 
         if (likes.length > 0) {
             const item = likes.find(
-                (like: ILike) => like.user === userId
+                (like: ILike) => like.user.toString() === userId
             ) as ILike;
-            if (item?.like) {
-                return res
-                    .status(200)
-                    .send({ message: "You have already liked this post." });
-            }
-            post.likes = post?.likes?.map((like: ILike) =>
-                like.user === userId ? { ...like, like: false } : like
-            );
+
+            if (!item?.like) {
+                throw new BadRequestError(
+                    "You have already disliked this post."
+                );
+            } else
+                post.likes = post?.likes?.map((like: ILike) =>
+                    like.user.toString() === userId
+                        ? { ...like, like: false }
+                        : like
+                );
         } else post?.likes?.unshift({ user: userId, like: false });
 
         await post.save();
