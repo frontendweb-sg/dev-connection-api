@@ -69,7 +69,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
         if (image) {
             deleteFile("posts", post.image);
         }
-
+        console.log(req.currentUser);
         const updatedPost = await Post.findByIdAndUpdate(
             id,
             {
@@ -186,13 +186,15 @@ const dislikePost = async (req: Request, res: Response, next: NextFunction) => {
         ) as ILike[];
 
         if (likes.length > 0) {
-            const item = likes.find((like: ILike) => like.user === userId);
-            if (item.like) {
+            const item = likes.find(
+                (like: ILike) => like.user === userId
+            ) as ILike;
+            if (item?.like) {
                 return res
                     .status(200)
                     .send({ message: "You have already liked this post." });
             }
-            post.likes = post.likes.map((like: ILike) =>
+            post.likes = post?.likes?.map((like: ILike) =>
                 like.user === userId ? { ...like, like: false } : like
             );
         } else post?.likes?.unshift({ user: userId, like: false });

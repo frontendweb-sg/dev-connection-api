@@ -18,12 +18,9 @@ export class Jwt {
     }
 
     static verifyToken(token: string) {
-        return JWT.verify(token, config.SECRET_KEY, (e) => {
-            console.log(e);
-            if (e) {
-                throw new AuthError(e.message);
-            }
-            return true;
+        return JWT.verify(token, config.SECRET_KEY, (err, data) => {
+            if (err) throw new AuthError(err.message);
+            return data;
         });
     }
 }
