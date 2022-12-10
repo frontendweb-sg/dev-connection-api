@@ -32,31 +32,50 @@ interface IPost {
 
 interface IPostDoc extends Document<IPost>, IPost {}
 
-const schema = new Schema({
-    category: {
-        type: Schema.Types.ObjectId,
-        ref: CATEGORY_TABLE_NAME,
-        default: null,
+const schema = new Schema(
+    {
+        category: {
+            type: Schema.Types.ObjectId,
+            ref: CATEGORY_TABLE_NAME,
+            default: null,
+        },
+        user: {
+            type: Schema.Types.ObjectId,
+            ref: USER_TABLE_NAME,
+            default: null,
+        },
+        title: { type: String, required: true },
+        description: { type: String },
+        image: { type: String },
+        code: { type: String, default: null },
+        likes: [
+            {
+                user: { type: Schema.Types.ObjectId, ref: USER_TABLE_NAME },
+                active: { type: Boolean, default: false },
+            },
+        ],
+        comments: [
+            {
+                user: { type: Schema.Types.ObjectId, ref: USER_TABLE_NAME },
+                comment: { type: String },
+                status: { type: String, default: Status.pending, enum: Status },
+            },
+        ],
+        active: { type: Boolean, default: true },
     },
-    user: { type: Schema.Types.ObjectId, ref: USER_TABLE_NAME, default: null },
-    title: { type: String, required: true },
-    description: { type: String },
-    image: { type: String },
-    code: { type: String, default: null },
-    likes: [
-        {
-            user: { type: Schema.Types.ObjectId, ref: USER_TABLE_NAME },
-            active: { type: Boolean, default: false },
+    {
+        timestamps: true,
+        toJSON: {
+            transform(doc, _ret) {
+                delete _ret.__v;
+            },
         },
-    ],
-    comments: [
-        {
-            user: { type: Schema.Types.ObjectId, ref: USER_TABLE_NAME },
-            comment: { type: String },
-            status: { type: String, default: Status.pending, enum: Status },
-        },
-    ],
-    active: { type: Boolean, default: true },
+    }
+);
+
+schema.pre("find", function cb(done) {
+    this.populate("category").populate("user");
+    done();
 });
 
 const Post = mongoose.model<IPostDoc>(POST_TABLE_NAME, schema);

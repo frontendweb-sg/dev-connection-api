@@ -1,5 +1,6 @@
 import JWT from "jsonwebtoken";
 import { config } from "../config";
+import { AuthError } from "../errors/auth-error";
 import { IUserDoc } from "../models/user";
 
 /**
@@ -17,6 +18,12 @@ export class Jwt {
     }
 
     static verifyToken(token: string) {
-        return JWT.verify(token, config.SECRET_KEY);
+        return JWT.verify(token, config.SECRET_KEY, (e) => {
+            console.log(e);
+            if (e) {
+                throw new AuthError(e.message);
+            }
+            return true;
+        });
     }
 }

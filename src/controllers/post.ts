@@ -30,6 +30,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
         const image = req.file;
 
         const post = new Post({
+            user: req.currentUser._id,
             category,
             title,
             description,
@@ -72,6 +73,7 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
             id,
             {
                 $set: {
+                    user: req.currentUser._id,
                     title,
                     description,
                     code,

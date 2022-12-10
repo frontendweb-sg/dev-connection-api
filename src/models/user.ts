@@ -36,6 +36,7 @@ const schema = new Schema(
         toJSON: {
             transform(doc, _ret) {
                 delete _ret.__v;
+                delete _ret.password;
             },
         },
     }

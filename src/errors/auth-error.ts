@@ -7,6 +7,7 @@ export class AuthError extends CustomError {
     status = 401;
     constructor(public message: string = "Unauthrozied access!") {
         super(message);
+        Object.setPrototypeOf(this, AuthError.prototype);
     }
     renderError(): IError[] {
         return [

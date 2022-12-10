@@ -9,7 +9,6 @@ import { User } from "../models/user";
  */
 const getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // console.log(req.currentUser);
         const users = await User.find().sort({ insertAt: 1 });
         return res.status(200).send(users);
     } catch (error) {
@@ -17,4 +16,37 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-export { getAll };
+/**
+ * Logged in user detail
+ * @param req
+ * @param res
+ * @param next
+ * @returns
+ */
+const detail = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const user = await User.findById(req.currentUser._id);
+        return res.status(200).send(user);
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * Delete user
+ * @param req
+ * @param res
+ * @param next
+ */
+const deleted = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+    } catch (error) {}
+};
+
+const deactivate = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {};
+
+export { getAll, detail, deleted, deactivate };
