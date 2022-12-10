@@ -8,7 +8,7 @@ type TStatus = Status.approved | Status.pending | Status.rejected;
 
 interface ILike {
     user: string;
-    active: boolean;
+    like: boolean;
 }
 
 interface IComment {
@@ -33,12 +33,16 @@ interface IPost {
 interface IPostDoc extends Document<IPost>, IPost {}
 
 const schema = new Schema({
-    category: { type: Schema.Types.ObjectId, ref: CATEGORY_TABLE_NAME },
-    user: { type: Schema.Types.ObjectId, ref: USER_TABLE_NAME },
+    category: {
+        type: Schema.Types.ObjectId,
+        ref: CATEGORY_TABLE_NAME,
+        default: null,
+    },
+    user: { type: Schema.Types.ObjectId, ref: USER_TABLE_NAME, default: null },
     title: { type: String, required: true },
     description: { type: String },
     image: { type: String },
-    code: { type: String },
+    code: { type: String, default: null },
     likes: [
         {
             user: { type: Schema.Types.ObjectId, ref: USER_TABLE_NAME },

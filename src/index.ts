@@ -8,6 +8,9 @@ import { errorHandler } from "./middleware/error-handler";
 import { authRoute } from "./routes/auth";
 import { categoryRoute } from "./routes/category";
 import { designationRoute } from "./routes/designation";
+import { postRouter } from "./routes/post";
+import { skillRoute } from "./routes/skill";
+import { userRouter } from "./routes/user";
 
 console.log(process.env.NODE_ENV);
 // App
@@ -32,15 +35,18 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     if (process.env.NODE_ENV === "development") {
         res.locals.localURL = "http://localhost:4200/api";
     } else {
-        res.locals.localURL = "https://dev-connections-api.herokuapp.com";
+        res.locals.localURL = "https://dev-vconnections-api.herokuapp.com";
     }
     next();
 });
 
 // route are here
 app.use("/api/auth", authRoute);
+app.use("/api/user", userRouter);
 app.use("/api/categories", categoryRoute);
 app.use("/api/designation", designationRoute);
+app.use("/api/skill", skillRoute);
+app.use("/api/post", postRouter);
 
 // api route
 app.get("/api", (req: Request, res: Response, next: NextFunction) => {
@@ -67,6 +73,7 @@ if (app.get("env") === "development") {
 
 // catch error
 app.use(errorHandler);
+
 // listen
 app.listen(PORT, async () => {
     console.log("Server is running on port " + PORT);
