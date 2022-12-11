@@ -1,11 +1,12 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { Status } from "../utils/enum";
+import { PostStatus, Status } from "../utils/enum";
 import { CATEGORY_TABLE_NAME } from "./category";
 import { USER_TABLE_NAME } from "./user";
 
 const POST_TABLE_NAME = "post";
 type TStatus = Status.approved | Status.pending | Status.rejected;
 
+type IPostStatus = "public" | "private" | "custom" | "pending";
 interface ILike {
     user: string;
     like: boolean;
@@ -26,6 +27,7 @@ interface IPost {
     description: string;
     image: string;
     code?: string;
+    status: IPostStatus;
     likes?: ILike[];
     comments?: IComment[];
     active?: boolean;
@@ -49,6 +51,7 @@ const schema = new Schema(
         description: { type: String },
         image: { type: String },
         code: { type: String, default: null },
+        status: { type: String, default: "public", enum: PostStatus },
         likes: [
             {
                 user: { type: Schema.Types.ObjectId, ref: USER_TABLE_NAME },

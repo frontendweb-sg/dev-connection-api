@@ -12,7 +12,8 @@ import { deleteFile } from "../utils/multer";
  */
 const getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const posts = await Post.find().sort({ insertAt: 1 });
+        const query = req.query;
+        const posts = (await Post.find({}).sort({ insertAt: 1 })) as IPostDoc[];
         return res.status(200).send(posts);
     } catch (error) {
         next(error);

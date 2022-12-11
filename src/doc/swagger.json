@@ -1,0 +1,100 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "The social api",
+        "description": "The social api",
+        "version": "0.0.1",
+        "contact": {
+            "email": "frontendweb.sg@gmail.com",
+            "name": "Pradeep Kumar",
+            "url": "https://www.frontendweb.in"
+        }
+    },
+    "security": [],
+    "servers": [
+        {
+            "url": "http://localhost:4200/api",
+            "description": ""
+        }
+    ],
+    "paths": {
+        "/auth": {
+            "post": {
+                "tags": ["Auth"],
+                "description": "Return logged in user detail",
+                "requestBody": {
+                    "description": "Enter email and password for loggin.",
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "email": "pkumar2@pythian.com",
+                                "password": "Admin$1234@"
+                            },
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "description": "Enter email address",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "Enter password",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["email", "password"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/auth/signup": {
+            "post": {
+                "tags": ["Auth"],
+                "description": "Register user",
+                "requestBody": {
+                    "description": "Please enter user defailt for registration",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "firstname": { "type": "string" },
+                                    "lastname": { "type": "string" },
+                                    "email": { "type": "string" },
+                                    "password": { "type": "string" },
+                                    "mobile": { "type": "string" }
+                                },
+                                "required": [
+                                    "firstname",
+                                    "lastname",
+                                    "email",
+                                    "password",
+                                    "mobile"
+                                ]
+                            },
+                            "example": {
+                                "firstname": "Pradeep",
+                                "lastname": "Kumar",
+                                "eamil": "abc@gmail.com",
+                                "password": "Admin$12345@",
+                                "mobile": "1234567891"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        }
+    }
+}
