@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { NotFoundError } from "../errors/not-found-error";
 import { BadRequestError } from "../errors/bad-request-error";
-import { ILike, IPostDoc, Post } from "../models/post";
+import { IComment, ILike, IPostDoc, Post } from "../models/post";
 import { deleteFile } from "../utils/multer";
-import path from "path";
+
 /**
  * Get all post
  * @param req
@@ -221,6 +221,71 @@ const dislikePost = async (req: Request, res: Response, next: NextFunction) => {
  * @param res
  * @param next
  */
-const comment = async (req: Request, res: Response, next: NextFunction) => {};
+const commentAdd = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = req.params.postId;
+        const post = (await Post.findById(id)) as IPostDoc;
 
-export { getAll, create, update, deleted, likePost, dislikePost };
+        if (!post) {
+            throw new NotFoundError("Post not found!");
+        }
+
+        const { message, status } = req.body;
+
+        post?.comments?.unshift({
+            user: req.currentUser._id,
+            message,
+            status,
+            insertAt: new Date(Date.now()),
+        });
+
+        await post.save();
+
+        return res.status(200).send(post);
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * Comment controller
+ * @param req
+ * @param res
+ * @param next
+ */
+const commentRemove = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const id = req.params.postId;
+        const post = (await Post.findById(id)) as IPostDoc;
+
+        if (!post) {
+            throw new NotFoundError("Post not found!");
+        }
+
+        const commentId = req.params.commentId;
+
+        const index = post.comments?.findIndex(
+            (comment: IComment) => comment._id?.toString() === commentId
+        );
+        post.comments?.splice(index!, 1);
+
+        return res.status(200).send(post);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export {
+    getAll,
+    create,
+    update,
+    deleted,
+    likePost,
+    dislikePost,
+    commentAdd,
+    commentRemove,
+};

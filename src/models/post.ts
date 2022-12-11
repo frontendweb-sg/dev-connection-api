@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema, Types } from "mongoose";
 import { Status } from "../utils/enum";
 import { CATEGORY_TABLE_NAME } from "./category";
 import { USER_TABLE_NAME } from "./user";
@@ -12,10 +12,11 @@ interface ILike {
 }
 
 interface IComment {
+    _id?: string;
     user: string;
-    comment: string;
+    message: string;
     status: TStatus;
-    insertAt: Date;
+    insertAt?: Date;
 }
 
 interface IPost {
@@ -57,7 +58,7 @@ const schema = new Schema(
         comments: [
             {
                 user: { type: Schema.Types.ObjectId, ref: USER_TABLE_NAME },
-                comment: { type: String },
+                message: { type: String },
                 status: { type: String, default: Status.pending, enum: Status },
             },
         ],

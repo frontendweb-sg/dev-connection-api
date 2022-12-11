@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import {
     create,
     deleted,
@@ -6,6 +6,8 @@ import {
     update,
     likePost,
     dislikePost,
+    commentAdd,
+    commentRemove,
 } from "../controllers/post";
 import { Uploader } from "../utils/multer";
 import { requestValidator } from "../middleware/request-validator";
@@ -40,5 +42,7 @@ route.delete("/:postId", auth, deleted);
 
 route.put("/:postId/like", auth, likePost);
 route.put("/:postId/dislike", auth, dislikePost);
+route.put("/:postId/comment", auth, commentAdd);
+route.delete("/:postId/comment/:commentId", commentRemove);
 
 export { route as postRouter };
