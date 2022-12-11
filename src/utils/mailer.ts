@@ -34,8 +34,8 @@ export class Mailer {
                 host: "smtp.mailtrap.io",
                 port: 2525,
                 auth: {
-                    user: "a6128f2fd18cd1",
-                    pass: "a4440f745f5222",
+                    user: config.MAIL_TRAP_USER,
+                    pass: config.MAIL_TRAP_PASS,
                 },
             }
         );
