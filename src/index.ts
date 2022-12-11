@@ -4,6 +4,7 @@ import express, { Request, Response, NextFunction } from "express";
 import path from "path";
 import cors from "cors";
 import swaggerUI from "swagger-ui-express";
+import swaggerDocument from "./doc/swagger.json";
 import { version } from "../package.json";
 import { connectDb } from "./db";
 import { errorHandler } from "./middleware/error-handler";
@@ -13,9 +14,7 @@ import { designationRoute } from "./routes/designation";
 import { postRouter } from "./routes/post";
 import { skillRoute } from "./routes/skill";
 import { userRouter } from "./routes/user";
-import swaggerDocument from "./doc/swagger.json";
 
-console.log(process.env.NODE_ENV);
 // App
 const app = express();
 const PORT = process.env.PORT || 4200;
@@ -29,8 +28,8 @@ app.set("title", "thesocial");
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // for parsing application/json
+app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(express.static("upload"));
 app.use(express.static(path.join(__dirname, "..", "public")));
 

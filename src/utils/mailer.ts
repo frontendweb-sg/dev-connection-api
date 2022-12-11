@@ -67,9 +67,7 @@ export class Mailer {
     }
 
     send(option: IMail) {
-        console.log("option", option);
         this._transport.sendMail(option, (error) => {
-            console.log(error);
             if (error) throw new BadRequestError(error.message);
             console.log("Mail sent!");
         });
