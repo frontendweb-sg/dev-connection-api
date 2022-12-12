@@ -16,11 +16,13 @@ interface ICurentUser {
 
 export const auth = (req: Request, res: Response, next: NextFunction) => {
     try {
-        const token = req.get("Authorization");
+        const header = req.get("Authorization");
 
-        if (!token) {
+        if (!header) {
             throw new AuthError("Unauthorized access");
         }
+
+        const token = header.split(" ")[1];
 
         const verify = Jwt.verifyToken(token) as ICurentUser | void;
         if (!verify) {

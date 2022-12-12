@@ -10,11 +10,24 @@
             "url": "https://www.frontendweb.in"
         }
     },
-    "security": [],
     "servers": [
         {
             "url": "http://localhost:4200/api",
             "description": ""
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
         }
     ],
     "paths": {
@@ -92,6 +105,281 @@
                 "responses": {
                     "200": {
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/categories": {
+            "get": {
+                "tags": ["Category"],
+                "summary": "Return a list of categories",
+                "responses": {
+                    "200": {
+                        "description": "Fetch all categories"
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Category"],
+                "requestBody": {
+                    "description": "Fill detail for adding category",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": { "type": "string" },
+                                    "description": { "type": "string" }
+                                },
+                                "required": ["title"]
+                            },
+                            "example": {
+                                "title": "Css",
+                                "description": "this is css category"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category added"
+                    }
+                }
+            }
+        },
+        "/categories/{catId}": {
+            "put": {
+                "tags": ["Category"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "catId",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": { "type": "string" },
+                                    "description": { "type": "string" }
+                                },
+                                "required": ["title"]
+                            },
+                            "example": {
+                                "title": "Css",
+                                "description": "this is css category"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category updated"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Category"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "catId",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category deleted!"
+                    }
+                }
+            }
+        },
+        "/skill": {
+            "get": {
+                "tags": ["Skill"],
+                "summary": "Return a list of skills",
+                "responses": {
+                    "200": {
+                        "description": "Fetch all skill"
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Skill"],
+                "requestBody": {
+                    "description": "Fill detail for adding skill",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": { "type": "string" }
+                                },
+                                "required": ["title"]
+                            },
+                            "example": {
+                                "title": "HTMl",
+                                "description": "this is css skill"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Skill added"
+                    }
+                }
+            }
+        },
+        "/skill/{skillId}": {
+            "put": {
+                "tags": ["Skill"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "skillId",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": { "type": "string" }
+                                },
+                                "required": ["title"]
+                            },
+                            "example": {
+                                "title": "Css"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Skill updated"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Skill"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "skillId",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Skill deleted!"
+                    }
+                }
+            }
+        },
+        "/designation": {
+            "get": {
+                "tags": ["Designation"],
+                "summary": "Return a list of designation",
+                "responses": {
+                    "200": {
+                        "description": "Fetch all designation"
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Designation"],
+                "requestBody": {
+                    "description": "Fill detail for adding designation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": { "type": "string" }
+                                },
+                                "required": ["title"]
+                            },
+                            "example": {
+                                "title": "Sr. frontend engineer"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Designation added"
+                    }
+                }
+            }
+        },
+        "/designation/{designationId}": {
+            "put": {
+                "tags": ["Designation"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "designationId",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": { "type": "string" }
+                                },
+                                "required": ["title"]
+                            },
+                            "example": {
+                                "title": "Css"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Designationupdated"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Designation"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "designationId",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Designation deleted!"
                     }
                 }
             }
