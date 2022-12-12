@@ -68,6 +68,7 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
         }
 
         const token = Jwt.getToken(user) as string;
+        req.session.user = user;
 
         const expireTime = new Date(Date.now());
         expireTime.setHours(expireTime.getHours() + 1);

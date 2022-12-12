@@ -5,6 +5,7 @@ import path from "path";
 import cors from "cors";
 import swaggerUI from "swagger-ui-express";
 import swaggerDocument from "./doc/swagger.json";
+import Session from "express-session";
 import { version } from "../package.json";
 import { connectDb } from "./db";
 import { errorHandler } from "./middleware/error-handler";
@@ -14,15 +15,19 @@ import { designationRoute } from "./routes/designation";
 import { postRouter } from "./routes/post";
 import { skillRoute } from "./routes/skill";
 import { userRouter } from "./routes/user";
+import { config } from "./config";
+import { IUserDoc } from "./models/user";
 
+declare module "express-session" {
+    interface SessionData {
+        user: IUserDoc;
+    }
+}
 // App
 const app = express();
 const PORT = process.env.PORT || 4200;
 
-// cookies config here
-
 // cors config here
-app.use(cors());
 // configuration
 app.set("title", "thesocial");
 app.set("view engine", "ejs");
@@ -33,8 +38,31 @@ app.use(express.urlencoded({ extended: true })); // for parsing application/x-ww
 app.use(express.static("upload"));
 app.use(express.static(path.join(__dirname, "..", "public")));
 
+// cors
+app.use(cors());
+
+// session
+app.use(
+    Session({
+        secret: config.SESSION_SECRET,
+        cookie: {
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000,
+            sameSite: true,
+        },
+        saveUninitialized: true,
+        resave: false,
+    })
+);
+
+// for production
+if (app.get("env") === "production") {
+    app.set("trust proxy", 1);
+}
+
+// local variables
 app.use((req: Request, res: Response, next: NextFunction) => {
-    if (process.env.NODE_ENV === "development") {
+    if (app.get("env") === "development") {
         res.locals.localURL = "http://localhost:4200/api";
     } else {
         res.locals.localURL = "https://dev-vconnections-api.herokuapp.com";

@@ -7,6 +7,7 @@ interface IConfig {
     MAILER_ID: string;
     MAIL_TRAP_USER: string;
     MAIL_TRAP_PASS: string;
+    SESSION_SECRET: string;
 }
 const globalConfig = {
     SECRET_KEY: process.env.SECRET_KEY,
@@ -14,6 +15,7 @@ const globalConfig = {
     MAILER_ID: process.env.MAILER_ID,
     MAIL_TRAP_USER: process.env.MAIL_TRAP_USER,
     MAIL_TRAP_PASS: process.env.MAIL_TRAP_PASS,
+    SESSION_SECRET: process.env.SESSION_SECRET,
 };
 
 const env = process.env.NODE_ENV || "development";
