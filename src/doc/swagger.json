@@ -23,6 +23,11 @@
                 "scheme": "bearer",
                 "bearerFormat": "JWT"
             }
+        },
+        "responses": {
+            "NotFound": {
+                "description": "Entity not found."
+            }
         }
     },
     "security": [
@@ -105,6 +110,26 @@
                 "responses": {
                     "200": {
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": ["User"],
+                "responses": {
+                    "200": {
+                        "description": "Get all users"
+                    }
+                }
+            }
+        },
+        "/user/me": {
+            "get": {
+                "tags": ["User"],
+                "responses": {
+                    "200": {
+                        "description": "Get user detail"
                     }
                 }
             }
@@ -380,6 +405,103 @@
                 "responses": {
                     "200": {
                         "description": "Designation deleted!"
+                    }
+                }
+            }
+        },
+        "/post": {
+            "get": {
+                "tags": ["Post"],
+                "summary": "Get all posts",
+                "responses": {
+                    "200": {
+                        "description": "Get all posts"
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Post"],
+                "summary": "Add new post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user": { "type": "string" },
+                                    "category": { "type": "string" },
+                                    "title": { "type": "string" },
+                                    "description": { "type": "string" },
+                                    "image": { "type": "string" }
+                                },
+                                "required": ["title", "category", "user"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": { "description": "Post added" }
+                }
+            }
+        },
+        "/post/{postId}": {
+            "put": {
+                "tags": ["Post"],
+                "summary": "Update post by post id",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "postId",
+                        "schema": { "type": "string" },
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Post"],
+                "summary": "Delete post by post id",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "postId",
+                        "schema": { "type": "string" },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
