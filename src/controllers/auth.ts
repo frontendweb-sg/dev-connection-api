@@ -35,8 +35,6 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
 
         const result = (await newUser.save()) as IUserDoc;
         return res.send({
-            success: true,
-            message: "User signup successfull",
             data: result,
         });
     } catch (error) {
@@ -68,16 +66,13 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
         }
 
         const token = Jwt.getToken(user) as string;
-        req.session.user = user;
 
         const expireTime = new Date(Date.now());
         expireTime.setHours(expireTime.getHours() + 1);
 
         return res.send({
-            success: true,
-            message: "User signup successfull",
             token: token,
-            expireTime,
+            expireTime: expireTime.getTime(),
             data: user,
         });
     } catch (error) {

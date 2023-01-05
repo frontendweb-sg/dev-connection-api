@@ -96,9 +96,9 @@ const deleted = async (req: Request, res: Response, next: NextFunction) => {
         const category = await Category.findById(catId);
         if (!category) throw new NotFoundError("Category not found!");
 
-        await Category.findByIdAndDelete(catId);
+        const result = await Category.findByIdAndDelete(catId);
 
-        return res.status(200).send({ catId });
+        return res.status(200).send(result);
     } catch (error) {
         next(error);
     }

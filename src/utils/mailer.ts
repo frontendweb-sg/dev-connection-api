@@ -2,10 +2,10 @@ import fs from "fs";
 import path from "path";
 import ejs from "ejs";
 import nodemailer from "nodemailer";
-import sgGrid from "nodemailer-sendgrid";
 import { config } from "../config";
 import { BadRequestError } from "../errors/bad-request-error";
 import { IUserDoc } from "../models/user";
+const sgGrid = require("nodemailer-sendgrid-transport");
 
 interface IMail {
     from: string;
@@ -27,17 +27,19 @@ export class Mailer {
     private _transport: nodemailer.Transporter;
     constructor() {
         this._transport = nodemailer.createTransport(
-            // sgGrid({
-            //     apiKey: config.EMAIL_API_KEY,
-            // })
-            {
-                host: "smtp.mailtrap.io",
-                port: 2525,
+            sgGrid({
                 auth: {
-                    user: config.MAIL_TRAP_USER,
-                    pass: config.MAIL_TRAP_PASS,
+                    api_key: config.EMAIL_API_KEY,
                 },
-            }
+            })
+            // {
+            //     host: "smtp.mailtrap.io",
+            //     port: 2525,
+            //     auth: {
+            //         user: config.MAIL_TRAP_USER,
+            //         pass: config.MAIL_TRAP_PASS,
+            //     },
+            // }
         );
     }
 
@@ -56,13 +58,13 @@ export class Mailer {
             from: config.MAILER_ID,
             subject: "Registration successfull",
             text: `Welcome to ${user.firstname} ${user.lastname}`,
-            // html: template({
-            //     email: email,
-            //     firstname: user.firstname,
-            //     lastname: user.lastname,
-            //     token: token,
-            //     localURL: local,
-            // }),
+            html: template({
+                email: email,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                token: token,
+                localURL: local,
+            }),
         });
     }
 
