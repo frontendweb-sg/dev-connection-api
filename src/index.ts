@@ -5,6 +5,9 @@ import path from "path";
 import morgan from "morgan";
 import cors from "cors";
 import { errorHandler } from "./middleware/error-handler";
+import { connectDb } from "./db";
+import { authRoute } from "./routes/auth";
+import { userRoute } from "./routes/user";
 
 // app
 const app = express();
@@ -28,6 +31,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+// routes
+app.use("/api/auth", authRoute);
+app.use("/api/user", userRoute);
+
 // catch all route and if not found throw error
 app.get("*", function (req, res) {
   throw new Error("Route not found");
@@ -36,7 +43,8 @@ app.get("*", function (req, res) {
 app.use(errorHandler);
 
 // listen
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
+  await connectDb();
   console.log(`Server is running on: localhost:${PORT}`);
 });
 

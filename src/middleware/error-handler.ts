@@ -15,8 +15,10 @@ export const errorHandler = (
   if (error instanceof CustomError) {
     return res.status(error.status).send({ errors: error.renderError() });
   }
-
+  console.log(error);
   res.send({
-    error: "Something went wrong",
+    error: {
+      message: "Something went wrong",
+    },
   });
 };
