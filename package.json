@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "server": "set NODE_ENV=development&&ts-node-dev src/index.ts",
+    "dev": "set NODE_ENV=development&&ts-node-dev src/index.ts",
     "test": "jest"
   },
   "keywords": [],
