@@ -4,6 +4,7 @@ import { MulterError } from 'multer'
 import { BadRequestError } from '../errors'
 
 export const errorHandler = (error: Error, req: Request, res: Response, next: NextFunction) => {
+  console.log('error', error)
   if (error instanceof MulterError) {
     error = new BadRequestError('You can not upload more than 5 files.')
   }

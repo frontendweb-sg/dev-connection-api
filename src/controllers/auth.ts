@@ -3,6 +3,10 @@ import { LoginBody } from '../types'
 import { IUserDoc, User } from '../models/user'
 import { AuthError, BadRequestError, NotFoundError } from '../errors'
 import { Jwt, Password } from '../utils'
+import { Mailer } from '../utils/mailer'
+import ejs from 'ejs'
+import fs from 'fs'
+import path from 'path'
 /**
  * Sign in controller
  * @param req
@@ -46,6 +50,23 @@ export const signUp = async (req: Request, res: Response, next: NextFunction) =>
     if (user) throw new BadRequestError('Email already existed!')
     const newUser = new User(req.body)
     const result = await newUser.save()
+
+    if (result && result.role !== 'admin') {
+      const htmlFile = fs.readFileSync(path.join(__dirname, '..', `views/register.ejs`), 'utf-8')
+      const template = ejs.compile(htmlFile)
+
+      Mailer.sendMail({
+        to: req.body.email,
+        subject: 'Registraion',
+        text: `Welcome to ${newUser.firstname} ${newUser.lastname}`,
+        html: template({
+          firstname: newUser.firstname,
+          lastname: newUser.lastname,
+          baseUrl: res.locals.baseUrl,
+          token: Jwt.genToken({ email: req.body.email, id: newUser.id })
+        })
+      })
+    }
     return res.status(201).json(result)
   } catch (error) {
     next(error)

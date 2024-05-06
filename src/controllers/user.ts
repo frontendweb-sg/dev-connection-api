@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express";
-import { IUser, User } from "../models/user";
-import { AuthError } from "../errors";
+import { Request, Response, NextFunction } from 'express'
+import { IUser, User } from '../models/user'
+import { AuthError } from '../errors'
 
 /**
  * Logged in user
@@ -9,17 +9,12 @@ import { AuthError } from "../errors";
  * @param next
  * @returns
  */
-export const loggedInUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const loggedInUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log("Hi", req.user);
-    const user = (await User.findById(req.user?.id)) as IUser;
-    if (!user) throw new AuthError("Unauthorized access");
-    return res.status(200).json(user);
+    const user = (await User.findById(req.user?.id)) as IUser
+    if (!user) throw new AuthError('Unauthorized access')
+    return res.status(200).json(user)
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
