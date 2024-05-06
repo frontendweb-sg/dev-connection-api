@@ -63,11 +63,72 @@ export const signUp = async (req: Request, res: Response, next: NextFunction) =>
           firstname: newUser.firstname,
           lastname: newUser.lastname,
           baseUrl: res.locals.baseUrl,
-          token: Jwt.genToken({ email: req.body.email, id: newUser.id })
+          token: Jwt.genToken({ email: req.body.email, id: newUser.id }, { expiresIn: '24h' })
         })
       })
     }
     return res.status(201).json(result)
+  } catch (error) {
+    next(error)
+  }
+}
+
+/**
+ * Email verification handler
+ * @param req
+ * @param res
+ * @param next
+ */
+export const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const token = req.params.token
+
+    const verify = Jwt.verifyToken(token) as any
+
+    if (!verify) res.redirect(`${res.locals.clientUrl}auth/verify-email?message='token expire'`)
+
+    await User.findByIdAndUpdate(verify.id, { $set: { emailVerify: true } }, { new: true })
+
+    res.redirect(`${res.locals.clientUrl}auth/verify-email?verify=${verify.email}`)
+  } catch (error) {
+    res.redirect(`${res.locals.clientUrl}auth/verify-email?message='invalid token'`)
+  }
+}
+
+/**
+ * Forgot password
+ * @param req
+ * @param res
+ * @param next
+ */
+export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = (await User.findOne({ email: req.body.email })) as IUserDoc
+
+    if (!user) throw new BadRequestError('No account associated with use, please register')
+
+    const token = Jwt.genToken({
+      id: user.id,
+      email: user.email
+    })
+
+    const htmlFile = fs.readFileSync(
+      path.join(__dirname, '..', `views/forgot-password.ejs`),
+      'utf-8'
+    )
+    const template = ejs.compile(htmlFile)
+
+    Mailer.sendMail({
+      to: req.body.email,
+      subject: 'Forgot password',
+      text: `Hi ${user.firstname} ${user.lastname}`,
+      html: template({
+        firstname: user.firstname,
+        lastname: user.lastname,
+        baseUrl: res.locals.baseUrl,
+        token: Jwt.genToken({ email: req.body.email, id: user.id }, { expiresIn: '24h' })
+      })
+    })
   } catch (error) {
     next(error)
   }

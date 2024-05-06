@@ -26,13 +26,11 @@ app.use(cors())
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   if (process.env.NODE_ENV === 'development') {
-    res.locals.baseUrl = process.env.BASE_URL
     morgan('dev')
-    next()
-  } else {
-    res.locals.baseUrl = process.env.BASE_URL
-    next()
   }
+  res.locals.baseUrl = process.env.BASE_URL
+  res.locals.clientUrl = process.env.CLIENT_URL
+  next()
 })
 
 // routes
@@ -40,7 +38,7 @@ app.use('/api/auth', authRoute)
 app.use('/api/user', userRoute)
 
 app.get('/register', (req: Request, res: Response, next: NextFunction) => {
-  res.render('./register.ejs', {
+  res.render('./forgot-password.ejs', {
     brand: 'Vue Social',
     baseUrl: res.locals.baseUrl,
     firstname: 'Pradeep',
