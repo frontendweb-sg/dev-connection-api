@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { body, oneOf } from 'express-validator'
-import { forgotPassword, signIn, signUp, verifyEmail } from '../controllers/auth'
+import { forgotPassword, resetPassword, signIn, signUp, verifyEmail } from '../controllers/auth'
 import { requestValidator } from '../middleware/request-validator'
 import { User } from '../models/user'
 import { BadRequestError } from '../errors'
@@ -61,4 +61,12 @@ route.post(
   requestValidator,
   forgotPassword
 )
+
+route.post(
+  '/reset-password',
+  [body('password').notEmpty().withMessage('Password is required')],
+  requestValidator,
+  resetPassword
+)
+
 export { route as authRoute }

@@ -107,11 +107,6 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
 
     if (!user) throw new BadRequestError('No account associated with use, please register')
 
-    const token = Jwt.genToken({
-      id: user.id,
-      email: user.email
-    })
-
     const htmlFile = fs.readFileSync(
       path.join(__dirname, '..', `views/forgot-password.ejs`),
       'utf-8'
@@ -125,9 +120,43 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
       html: template({
         firstname: user.firstname,
         lastname: user.lastname,
-        baseUrl: res.locals.baseUrl,
+        baseUrl: res.locals.clientUrl,
         token: Jwt.genToken({ email: req.body.email, id: user.id }, { expiresIn: '24h' })
       })
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+/**
+ * Reset password
+ * @param req
+ * @param res
+ * @param next
+ */
+export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { password, token } = req.body
+    const verify = Jwt.verifyToken(token) as any
+    if (!verify) new AuthError('Invalid token')
+
+    const user = (await User.findById(verify.id)) as IUserDoc
+    if (!user) throw new AuthError('Invalid token')
+
+    const result = await User.findByIdAndUpdate(
+      verify.id,
+      {
+        $set: {
+          password: Password.hash(password)
+        }
+      },
+      { new: true }
+    )
+
+    return res.status(200).json({
+      id: result?.id,
+      message: 'Password updated'
     })
   } catch (error) {
     next(error)
