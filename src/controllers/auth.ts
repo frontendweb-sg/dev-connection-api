@@ -1,12 +1,14 @@
+import ejs from 'ejs'
+import fs from 'fs'
+import path from 'path'
 import { Request, Response, NextFunction } from 'express'
 import { LoginBody } from '../types'
 import { IUserDoc, User } from '../models/user'
 import { AuthError, BadRequestError, NotFoundError } from '../errors'
 import { Jwt, Password } from '../utils'
 import { Mailer } from '../utils/mailer'
-import ejs from 'ejs'
-import fs from 'fs'
-import path from 'path'
+import { AppContent } from '../utils/content'
+
 /**
  * Sign in controller
  * @param req
@@ -21,11 +23,11 @@ export const signIn = async (req: Request, res: Response, next: NextFunction) =>
     }).select('+password')) as IUserDoc
 
     if (!user) {
-      throw new NotFoundError('No account associated with us, please register!')
+      throw new NotFoundError(AppContent.noAccount)
     }
 
     const verify = Password.compare(password, user.password)
-    if (!verify) throw new AuthError('Invalid password!')
+    if (!verify) throw new AuthError(AppContent.invalidPassword)
 
     const accessToken = Jwt.genToken({ email: user.email, id: user._id })
     return res.status(200).json({
@@ -47,7 +49,7 @@ export const signIn = async (req: Request, res: Response, next: NextFunction) =>
 export const signUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = (await User.findOne({ email: req.body.email })) as IUserDoc
-    if (user) throw new BadRequestError('Email already existed!')
+    if (user) throw new BadRequestError(AppContent.emailExisted)
     const newUser = new User(req.body)
     const result = await newUser.save()
 
@@ -57,7 +59,7 @@ export const signUp = async (req: Request, res: Response, next: NextFunction) =>
 
       Mailer.sendMail({
         to: req.body.email,
-        subject: 'Registraion',
+        subject: AppContent.registration,
         text: `Welcome to ${newUser.firstname} ${newUser.lastname}`,
         html: template({
           firstname: newUser.firstname,
@@ -105,7 +107,7 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
   try {
     const user = (await User.findOne({ email: req.body.email })) as IUserDoc
 
-    if (!user) throw new BadRequestError('No account associated with use, please register')
+    if (!user) throw new BadRequestError(AppContent.noAccount)
 
     const htmlFile = fs.readFileSync(
       path.join(__dirname, '..', `views/forgot-password.ejs`),
@@ -115,7 +117,7 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
 
     Mailer.sendMail({
       to: req.body.email,
-      subject: 'Forgot password',
+      subject: AppContent.forgotPassword,
       text: `Hi ${user.firstname} ${user.lastname}`,
       html: template({
         firstname: user.firstname,
@@ -139,10 +141,10 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
   try {
     const { password, token } = req.body
     const verify = Jwt.verifyToken(token) as any
-    if (!verify) new AuthError('Invalid token')
+    if (!verify) new AuthError(AppContent.invalidToken)
 
     const user = (await User.findById(verify.id)) as IUserDoc
-    if (!user) throw new AuthError('Invalid token')
+    if (!user) throw new AuthError(AppContent.invalidToken)
 
     const result = await User.findByIdAndUpdate(
       verify.id,
@@ -156,7 +158,7 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
 
     return res.status(200).json({
       id: result?.id,
-      message: 'Password updated'
+      message: AppContent.passwordUpdated
     })
   } catch (error) {
     next(error)
