@@ -38,7 +38,7 @@ app.use('/api/auth', authRoute)
 app.use('/api/user', userRoute)
 
 app.get('/register', (req: Request, res: Response, next: NextFunction) => {
-  res.render('./forgot-password.ejs', {
+  res.render('./verification-code.ejs', {
     brand: 'Vue Social',
     baseUrl: res.locals.baseUrl,
     firstname: 'Pradeep',

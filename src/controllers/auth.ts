@@ -164,3 +164,44 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
     next(error)
   }
 }
+
+/**
+ * Send verification code
+ * @param req
+ * @param res
+ * @param next
+ */
+export const sendVerificationCode = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email } = req.body
+
+    const user = (await User.findOne({ email })) as IUserDoc
+
+    if (!user) throw new NotFoundError(AppContent.noAccount)
+
+    const htmlFile = fs.readFileSync(
+      path.join(__dirname, '..', `views/verification-code.ejs`),
+      'utf-8'
+    )
+    const template = ejs.compile(htmlFile)
+
+    Mailer.sendMail({
+      to: req.body.email,
+      subject: AppContent.forgotPassword,
+      text: `Hi ${user.firstname} ${user.lastname}`,
+      html: template({
+        firstname: user.firstname,
+        lastname: user.lastname,
+        baseUrl: res.locals.baseUrl,
+        token: Jwt.genToken({ email: req.body.email, id: user.id }, { expiresIn: '24h' })
+      })
+    })
+
+    return res.status(200).json({
+      message: AppContent.mailSent,
+      email
+    })
+  } catch (error) {
+    next(error)
+  }
+}

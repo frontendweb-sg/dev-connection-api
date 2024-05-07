@@ -8,5 +8,6 @@ export const AppContent = {
   invalidPassword: 'Invalid password!',
   unauthorizedAccess: 'Unauthorized access',
   uploadImageMessage: 'You can not upload more than 5 files.',
-  somthingWentWrong: 'Something went wrong'
+  somthingWentWrong: 'Something went wrong',
+  mailSent: 'Mail sent!, Please check your mail'
 }
