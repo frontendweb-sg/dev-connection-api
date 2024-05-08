@@ -8,6 +8,9 @@ import { errorHandler } from './middleware/error-handler'
 import { connectDb } from './db'
 import { authRoute } from './routes/auth'
 import { userRoute } from './routes/user'
+import { ApolloServer } from '@apollo/server'
+import { expressMiddleware } from '@apollo/server/express4'
+import { startStandaloneServer } from '@apollo/server/standalone'
 
 // app
 const app = express()
@@ -23,6 +26,43 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.static(path.resolve(__dirname, '..', 'public')))
 
 app.use(cors())
+
+// appolo serve
+const typeDefs = `#graphql
+  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
+
+  # This "Book" type defines the queryable fields for every book in our data source.
+  type Book {
+    title: String
+    author: String
+  }
+
+  # The "Query" type is special: it lists all of the available queries that
+  # clients can execute, along with the return type for each. In this
+  # case, the "books" query returns an array of zero or more Books (defined above).
+  type Query {
+    books: [Book]
+  }
+`
+const books = [
+  {
+    title: 'The Awakening',
+    author: 'Kate Chopin'
+  },
+  {
+    title: 'City of Glass',
+    author: 'Paul Auster'
+  }
+]
+const resolvers = {
+  Query: {
+    books: () => books
+  }
+}
+const apolloServer = new ApolloServer({
+  typeDefs,
+  resolvers
+})
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   if (process.env.NODE_ENV === 'development') {

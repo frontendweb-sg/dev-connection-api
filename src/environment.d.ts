@@ -4,7 +4,7 @@ declare global {
       GITHUB_AUTH_TOKEN: string
       NODE_ENV: 'development' | 'production'
       PORT?: string
-      DATABASE_URI: string
+      MONGODB_URL: string
       SECRET_KEY: string
       BREVO_SMTP: string
       BREVO_PORT: number
