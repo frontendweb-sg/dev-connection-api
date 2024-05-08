@@ -1,22 +1,23 @@
-import { Request, Response, NextFunction } from "express";
-import { Jwt } from "../utils/jwt";
-import { AuthError } from "../errors";
+import { Request, Response, NextFunction } from 'express'
+import { Jwt } from '../utils/jwt'
+import { AuthError } from '../errors'
+import { AppContent } from '../utils/content'
 
 export const auth = (req: Request, res: Response, next: NextFunction) => {
-  const header = req.get("Authorization");
+  const header = req.get('Authorization')
 
-  const token = header?.split(" ")[1];
+  const token = header?.split(' ')[1]
 
-  let verify;
+  let verify
   try {
-    verify = Jwt.verifyToken(token!) as any;
+    verify = Jwt.verifyToken(token!) as any
 
-    if (!verify) throw new AuthError("Invalid token");
+    if (!verify) throw new AuthError(AppContent.invalidToken)
 
-    req.user = verify;
+    req.user = verify
 
-    next();
+    next()
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
