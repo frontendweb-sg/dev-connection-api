@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { IUser, IUserDoc, User } from '../models/user'
-import { AuthError } from '../errors'
+import { AuthError, BadRequestError } from '../errors'
 import { AppContent } from '../utils/content'
 import { Password } from '../utils'
 import { Profile, ProfileDoc } from '../models/profile'
@@ -31,11 +31,8 @@ export const loggedInUser = async (req: Request, res: Response, next: NextFuncti
 export const loggedInUerProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.user?.id
-
     const profie = (await Profile.findOne({ user: userId })) as ProfileDoc
-
-    if (!profie) throw new AuthError('Unauthorized access')
-
+    if (!profie) throw new BadRequestError('No profile, Please add')
     return res.status(200).send(profie)
   } catch (error) {
     next(error)

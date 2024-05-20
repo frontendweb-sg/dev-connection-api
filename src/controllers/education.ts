@@ -19,11 +19,7 @@ export const addEducation = async (req: Request, res: Response, next: NextFuncti
 
     const result = await Profile.findByIdAndUpdate(
       profileId,
-      {
-        $push: {
-          education: body
-        }
-      },
+      { $push: { education: body } },
       { new: true }
     )
 
@@ -32,17 +28,52 @@ export const addEducation = async (req: Request, res: Response, next: NextFuncti
     next(error)
   }
 }
+
 /**
  * Update education
  * @param req
  * @param res
  * @param next
  */
-export const updateEducation = async (req: Request, res: Response, next: NextFunction) => {}
+export const updateEducation = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const profileId = req.params.profileId
+    const educationId = req.params.educationId
+    const body = req.body as Education
+
+    const filter = { _id: profileId, education: { _id: educationId } }
+    const result = await Profile.findByIdAndUpdate(
+      filter,
+      { $set: { education: body } },
+      { new: true }
+    )
+
+    return res.status(200).send(result?.education)
+  } catch (error) {
+    next(error)
+  }
+}
+
 /**
  * Delete education
  * @param req
  * @param res
  * @param next
  */
-export const deleteEducation = async (req: Request, res: Response, next: NextFunction) => {}
+export const deleteEducation = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const profileId = req.params.profileId
+    const educationId = req.params.educationId
+
+    const filter = { _id: profileId, education: { _id: educationId } }
+    const result = await Profile.findByIdAndUpdate(
+      filter,
+      { $pull: { education: { _id: educationId } } },
+      { new: true }
+    )
+
+    return res.status(200).send(result?.education)
+  } catch (error) {
+    next(error)
+  }
+}

@@ -11,7 +11,7 @@ import mongoose, { MongooseError } from 'mongoose'
  */
 export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.query.userId
+    const userId = req.query.user ?? req.query.userId
 
     const profile = (await Profile.findOne({ user: userId })) as ProfileDoc
     if (!profile) throw new NotFoundError('No profile found')
@@ -73,9 +73,13 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
     } = req.body as Profile
     const { profileId } = req.params
 
-    const profile = (await Profile.findById(profileId)) as ProfileDoc
-    if (profile) throw new BadRequestError('Profile not existed!, pelase create')
+    const profile = (await Profile.findOne({
+      user: req.user?.id,
+      _id: profileId
+    })) as ProfileDoc
+    if (!profile) throw new BadRequestError('Profile not existed!, pelase create')
 
+    console.log(req.body, 'body')
     const result = await Profile.findByIdAndUpdate(
       { user: req.user?.id, _id: profileId },
       {

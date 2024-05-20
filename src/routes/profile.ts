@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { auth } from '../middleware/auth'
 import { addProfile, getProfile, updateProfile } from '../controllers/profile'
-import { addEducation, updateEducation } from '../controllers/education'
+import { addEducation, deleteEducation, updateEducation } from '../controllers/education'
 
 const route = Router()
 
@@ -11,5 +11,6 @@ route.put('/:profileId', auth, updateProfile)
 
 route.post('/:profileId/education', auth, addEducation)
 route.put('/:profileId/education/:educationId', auth, updateEducation)
+route.delete('/:profileId/education/:educationId', auth, deleteEducation)
 
 export { route as profileRoute }
