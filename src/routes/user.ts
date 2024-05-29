@@ -1,10 +1,12 @@
-import { Router } from "express";
-import { auth } from "../middleware/auth";
+import { Router } from 'express'
+import { auth } from '../middleware/auth'
 
-import { loggedInUser } from "../controllers/user";
+import { changePassword, loggedInUerProfile, loggedInUser } from '../controllers/user'
 
-const route = Router();
+const route = Router()
 
-route.get("/me", auth, loggedInUser);
+route.get('/me', auth, loggedInUser)
+route.get('/profile', auth, loggedInUerProfile)
+route.post('/change-password', auth, changePassword)
 
-export { route as userRoute };
+export { route as userRoute }
