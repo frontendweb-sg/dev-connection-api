@@ -56,6 +56,7 @@ const getPost = async (req: Request, res: Response, next: NextFunction) => {
     next(error)
   }
 }
+
 /**
  * Add post
  * @param req
@@ -76,6 +77,7 @@ const addPost = async (req: Request, res: Response, next: NextFunction) => {
     next(error)
   }
 }
+
 /**
  * Update post
  * @param req
@@ -110,6 +112,7 @@ const updatePost = async (req: Request, res: Response, next: NextFunction) => {
     next(error)
   }
 }
+
 /**
  * Delete post
  * @param req
