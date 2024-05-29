@@ -9,6 +9,7 @@ import { connectDb } from './db'
 import { authRoute } from './routes/auth'
 import { userRoute } from './routes/user'
 import { profileRoute } from './routes/profile'
+import { postRoute } from './routes/post'
 
 // app
 const app = express()
@@ -38,6 +39,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/api/auth', authRoute)
 app.use('/api/user', userRoute)
 app.use('/api/profile', profileRoute)
+app.use('/api/post', postRoute)
 
 app.get('/register', (req: Request, res: Response, next: NextFunction) => {
   res.render('./verification-code.ejs', {
